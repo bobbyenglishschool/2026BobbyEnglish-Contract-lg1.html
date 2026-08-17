@@ -381,14 +381,18 @@
                     <tbody>
                         <tr>
                             <th><span class="zh-title">選讀核定班別</span><span class="en-title">Enrolled Course</span></th>
-                            <td style="font-weight: bold; color: var(--uci-blue); font-size: 13.5px;">Let's Go 1 兒童美語初級班</td>
+                            <!-- 🎯 修改亮點：將班別拆分為兩行，並精準居中對齊 -->
+                            <td style="font-weight: bold; color: var(--uci-blue); font-size: 13.5px; text-align: center; vertical-align: middle; line-height: 1.4;">
+                                Let's Go 1<br>兒童美語初級班
+                            </td>
                             <th><span class="zh-title">核定收費方案選擇</span><span class="en-title">Tuition Plan Option</span></th>
                             <td>
                                 <select id="discountSelector" class="select-input" onchange="calculateContractBilling()">
                                     <option value="1">標準常規原價方案 / Standard Plan ($35,948)</option>
                                     <option value="0.9">9折優惠方案 / 10% Off Promotion</option>
                                     <option value="0.85">85折優惠方案 / 15% Off Promotion</option>
-                                    <option value="0.8">✨ 老朋友8折優惠 / 20% Off Promotion</option>
+                                    <!-- 🎯 已刪除「老朋友」字樣，保留「8折優惠方案」 -->
+                                    <option value="0.8">8折優惠方案 / 20% Off Promotion</option>
                                 </select>
                             </td>
                         </tr>
