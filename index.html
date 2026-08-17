@@ -347,7 +347,7 @@
 <div class="page-container">
     <form id="contractForm" action="https://formsubmit.co/joy@bobbyenglishschool.com" method="POST" onsubmit="prepareSubmit(event)">
         <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" id="formSubject" name="_subject" value="【法律合約書回傳】Let's Go 1 兒童美語初級班">
+        <input type="hidden" id="formSubject" name="_subject" value="【法律合約書回傳】Let's Go 1 兒童美語初級">
         
         <!-- 🔒 雙簽章圖檔回收管道 -->
         <input type="hidden" id="signature_parent_base64" name="[家長親筆手寫電子簽章區]">
@@ -362,7 +362,7 @@
         <div class="page">
             <div class="contract-header">
                 <h1>私立巴比美語短期補習班 ｜ 短期補習服務報名表暨服務契約書</h1>
-                <h2>Let's Go 1 兒童美語初級班</h2>
+                <h2>Let's Go 1 兒童美語初級</h2>
                 <h2 style="font-size: 13.5px; font-weight: bold; margin-top: 5px; opacity: 0.95;">Bobby English School - Enrollment Form & Service Contract</h2>
                 <p style="font-size: 11px; color: var(--text-sub); margin: 10px 0 0 0;">(依據教育部短期補習班補習服務契約書範本與桃園市最新設立及管理法規制定-2026年9月最新核定版)</p>
             </div>
@@ -381,9 +381,9 @@
                     <tbody>
                         <tr>
                             <th><span class="zh-title">選讀核定班別</span><span class="en-title">Enrolled Course</span></th>
-                            <!-- 🎯 修改亮點：將班別拆分為兩行，並精準居中對齊 -->
-                            <td style="font-weight: bold; color: var(--uci-blue); font-size: 13.5px; text-align: center; vertical-align: middle; line-height: 1.4;">
-                                Let's Go 1<br>兒童美語初級班
+                            <!-- 🎯 精準規範：第一區表格欄位文字拆為兩行，刪除贅字「班」，100% 幾何精準置中！ -->
+                            <td style="font-weight: bold; color: var(--uci-blue); font-size: 13.5px; text-align: center; vertical-align: middle; line-height: 1.4; padding: 6px;">
+                                Let's Go 1<br>兒童美語初級
                             </td>
                             <th><span class="zh-title">核定收費方案選擇</span><span class="en-title">Tuition Plan Option</span></th>
                             <td>
@@ -391,8 +391,8 @@
                                     <option value="1">標準常規原價方案 / Standard Plan ($35,948)</option>
                                     <option value="0.9">9折優惠方案 / 10% Off Promotion</option>
                                     <option value="0.85">85折優惠方案 / 15% Off Promotion</option>
-                                    <!-- 🎯 已刪除「老朋友」字樣，保留「8折優惠方案」 -->
-                                    <option value="0.8">8折優惠方案 / 20% Off Promotion</option>
+                                    <!-- 🎯 已刪除「老朋友」字樣，統一顯示為「✨ 8 折優惠方案」 -->
+                                    <option value="0.8">✨ 8 折優惠方案 / 20% Off Promotion</option>
                                 </select>
                             </td>
                         </tr>
@@ -421,7 +421,7 @@
                 </div>
                 <div class="legal-item">
                     <strong>第一條：修業班別與班級性質 / Article 1: Course and Program Enrollment Type：</strong><br>
-                    1. 本契約核定就讀班級為：Let's Go 1 兒童美語初級班。<br>
+                    1. 本契約核定就讀班級為：Let's Go 1 兒童美語初級。<br>
                     2. 本課程屬一般系統化正規美語教學進度班，非屬保證班（補習班未提供任何特定考取、分數擔保、退費退分等特定保證成效承諾）。<br>
                     <span class="legal-en">1. The approved program under this contract is: Let's Go 1 Children's English Elementary Class.<br>2. This course is a regular systematic progression program and is NOT a "guaranteed success" or "warranty" program (No promises of passing specific exams or special guarantee warranties shall apply).</span>
                 </div>
@@ -611,8 +611,9 @@ function clearSig(target) {
 }
 
 // =========================================================================
-// 🎯 核心修正：遵守最高協定全項目連動算式：
+// 🎯 核心升級：遵守最高協定全項目連動算式：
 // 【應繳總金額 = Math.round((基本學費 + 原價教材費 + 當期學雜費) * 折扣率)】
+// 並且同步連動第五條內文總金額（legal_total_zh）！
 // =========================================================================
 function calculateContractBilling() {
     var discountRatio = parseFloat(document.getElementById('discountSelector').value);
@@ -621,8 +622,8 @@ function calculateContractBilling() {
     var pricePerLesson = 620;
     var lessons = 51;
     var baseTuition = pricePerLesson * lessons; // $31,620
-    var rawMaterials = 1268;                   // $1,268
-    var rawMisc = 60 * lessons;                // $3,060
+    var rawMaterials = 1268;                    // $1,268
+    var rawMisc = 60 * lessons;                 // $3,060
     
     // 全項目未折總計 = 31,620 + 1,268 + 3,060 = 35,948
     var subTotal = baseTuition + rawMaterials + rawMisc;
@@ -630,14 +631,16 @@ function calculateContractBilling() {
     // 🎯 全項目一律連動乘上折扣率並四捨五入整數！
     var grandTotal = Math.round(subTotal * discountRatio);
 
-    // 顯示於表格中 (教材與雜費顯示原價標示，或依全項目折扣後展現)
+    // 顯示於表格中
     document.getElementById('td_tuition').innerText = "NT$ " + baseTuition.toLocaleString() + " 元";
     document.getElementById('td_materials').innerText = "NT$ " + rawMaterials.toLocaleString() + " 元";
     document.getElementById('td_misc').innerText = "NT$ " + rawMisc.toLocaleString() + " 元";
     document.getElementById('td_total').innerText = "NT$ " + grandTotal.toLocaleString() + " 元";
     
-    // 🎯 法律條款第五條動態連動更新！
-    document.getElementById('legal_total_zh').innerText = grandTotal.toLocaleString();
+    // 🎯 法律條款第五條動態連動即時更新！
+    if (document.getElementById('legal_total_zh')) {
+        document.getElementById('legal_total_zh').innerText = grandTotal.toLocaleString();
+    }
 
     // 備份死數據至 Form 隱藏欄位
     document.getElementById('hidden_tuition').value = baseTuition + " 元";
@@ -651,7 +654,7 @@ function calculateContractBilling() {
     if (discountRatio === 0.85) discountText = "享 85 折特惠";
     if (discountRatio === 0.8) discountText = "享 8 折特惠";
 
-    document.getElementById('formSubject').value = "【法律合約完成-" + discountText + "】Let's Go 1 兒童美語初級班";
+    document.getElementById('formSubject').value = "【法律合約完成-" + discountText + "】Let's Go 1 兒童美語初級";
 }
 
 // ===== 雙通道連線傳送驗證 =====
@@ -700,6 +703,7 @@ window.onload = function() {
     resizeAllCanvases();
     window.addEventListener('resize', resizeAllCanvases);
     
+    // 🎯 審閱期即時連動：家長打開網頁當天即為審閱日期（不另外減天數）
     var today = new Date();
     var minguoYear = today.getFullYear() - 1911;
     var currentMonth = today.getMonth() + 1;
