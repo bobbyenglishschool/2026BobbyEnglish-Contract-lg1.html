@@ -17,7 +17,7 @@
             --uci-gold: #fecc07;
             --soft-red: #e74c3c;
             --card-bg: #f8fafc;
-            --border-color: #cbd5e1;
+            --border-color: #1b3d6d; /* 強制導向巴比深藍 */
             --text-main: #1e293b;
             --text-sub: #475569;
         }
@@ -83,7 +83,6 @@
             display: inline-block;
         }
 
-        /* 表格行動端包裹容器 */
         .table-responsive-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -137,6 +136,22 @@
             background-color: #fff;
         }
 
+        /* 🎯 Aegis 核心 UI 規範 5：選讀班別拆解兩行、去「班」字、100% 幾何精準居中 */
+        .static-course-cell {
+            font-weight: bold;
+            color: var(--uci-blue);
+            font-size: 13.5px;
+            text-align: center !important;
+            vertical-align: middle !important;
+            line-height: 1.4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 4px 0;
+        }
+
         .select-input {
             font-size: 12px; 
             font-weight: bold;
@@ -166,8 +181,21 @@
             background-color: rgba(254, 204, 7, 0.15);
         }
 
+        .privacy-statement {
+            background-color: #f0f4f8;
+            padding: 14px 18px;
+            border-left: 4px solid var(--uci-blue);
+            border-top: 1px solid #1b3d6d !important;
+            border-right: 1px solid #1b3d6d !important;
+            border-bottom: 1px solid #1b3d6d !important;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            line-height: 1.65;
+        }
+
         .legal-box {
-            border: 1px solid var(--border-color);
+            border: 1px solid #1b3d6d !important;
             background-color: #fafbfc;
             padding: 20px;
             height: 420px; 
@@ -176,12 +204,12 @@
             line-height: 1.7;
             text-align: left;
             margin-bottom: 20px;
-            border-radius: 6px;
+            border-radius: 8px;
         }
 
         .legal-item {
             margin-bottom: 20px;
-            border-bottom: 1px dashed #cbd5e1;
+            border-bottom: 1px dashed #1b3d6d;
             padding-bottom: 15px;
         }
 
@@ -208,9 +236,9 @@
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            gap: 4%;
+            gap: 20px;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 15px;
             margin-bottom: 20px;
         }
 
@@ -221,19 +249,20 @@
         }
 
         .signature-label {
-            font-size: 12.5px;
+            font-size: 13px;
             color: var(--uci-blue);
-            font-weight: bold;
-            margin-bottom: 6px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
         .signature-canvas-container {
             width: 100%;
-            height: 130px;
+            height: 140px;
             background-color: #fff;
-            border: 1.5px dashed var(--uci-blue);
+            border: 1.5px dashed var(--uci-blue) !important;
             position: relative;
             border-radius: 6px;
+            overflow: hidden;
         }
 
         canvas {
@@ -241,6 +270,7 @@
             height: 100%;
             cursor: crosshair;
             display: block;
+            touch-action: none;
         }
 
         .canvas-clear-btn {
@@ -254,26 +284,27 @@
             font-size: 11px;
             border-radius: 4px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
+            z-index: 10;
         }
 
         .agreement-banner {
             text-align: center;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 800;
             color: var(--soft-red);
             margin: 25px 0;
-            padding: 12px;
-            background-color: #fef2f2;
-            border: 1px solid #fecaca;
+            padding: 12px 16px;
+            background-color: rgba(231, 76, 60, 0.06);
+            border: 1px solid var(--soft-red);
             border-radius: 6px;
             line-height: 1.6;
         }
 
         .submit-btn-container, .print-btn-container {
             text-align: center;
-            margin-top: 20px;
-            padding-bottom: 10px;
+            margin-top: 25px;
+            padding-bottom: 15px;
         }
 
         .submit-btn {
@@ -304,28 +335,28 @@
             border: none;
             padding: 12px 35px;
             font-size: 14px;
-            font-weight: 800;
-            border-radius: 25px;
+            font-weight: 700;
+            border-radius: 20px;
             cursor: pointer;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
             transition: all 0.2s;
         }
 
         .print-btn:hover {
-            background-color: #102a4d;
-            transform: translateY(-1px);
+            opacity: 0.9;
+            transform: scale(1.02);
         }
 
         @media print {
             @page { size: A4 portrait; margin: 10mm 15mm; }
-            body { background-color: #fff; padding: 0; margin: 0; }
+            body { background-color: #fff; padding: 0; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .page-container { max-width: 100%; width: 100%; box-shadow: none; border-radius: 0; }
-            .page { padding: 10mm 15mm !important; width: 210mm; }
-            .legal-box { height: auto !important; overflow-y: visible !important; border: none; background-color: #fff; padding: 0; }
+            .page { padding: 0 !important; }
+            .legal-box { height: auto !important; overflow-y: visible !important; border: none !important; background-color: #fff; padding: 0; }
             .legal-item { page-break-inside: avoid; }
             .canvas-clear-btn, .submit-btn-container, .print-btn-container { display: none !important; }
-            .signature-canvas-container { border: 1px solid var(--uci-blue); }
-            table, th, td { border: 1px solid #1b3d6d !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .signature-canvas-container { border: 1px solid var(--uci-blue) !important; }
+            table, th, td { border: 1px solid #1b3d6d !important; }
             th { width: 25% !important; background-color: #f0f4f8 !important; }
             td { width: 25% !important; }
         }
@@ -334,11 +365,9 @@
             body { padding: 8px; }
             .page { padding: 20px 15px; }
             .page-container { width: 100%; overflow-x: visible; }
-            .select-input { font-size: 11px; padding: 4px 2px; }
-            .submit-btn { font-size: 15px; padding: 12px 20px; }
+            table { min-width: 650px; } 
             .dual-signature-row { flex-direction: column; gap: 15px; }
             .signature-block { width: 100%; }
-            table { min-width: 650px; }
         }
     </style>
 </head>
@@ -363,12 +392,12 @@
             <div class="contract-header">
                 <h1>私立巴比美語短期補習班 ｜ 短期補習服務報名表暨服務契約書</h1>
                 <h2>Let's Go 1 兒童美語初級</h2>
-                <h2 style="font-size: 13.5px; font-weight: bold; margin-top: 5px; opacity: 0.95;">Bobby English School - Enrollment Form & Service Contract</h2>
+                <h2 style="font-size: 13.5px; font-weight: 700; margin-top: 5px; opacity: 0.95;">Bobby English School - Enrollment Form & Service Contract</h2>
                 <p style="font-size: 11px; color: var(--text-sub); margin: 10px 0 0 0;">(依據教育部短期補習班補習服務契約書範本與桃園市最新設立及管理法規制定-2026年9月最新核定版)</p>
             </div>
 
             <!-- 🎯 契約審閱確認條款 -->
-            <div class="privacy-statement" style="background-color: #f0f4f8; padding: 12px; border-left: 4px solid var(--uci-blue); font-size: 13px; margin-bottom: 20px;">
+            <div class="privacy-statement">
                 <strong>【重要權益：契約審閱權】 / Contract Review Right</strong><br>
                 本定型化契約書於中華民國 <span id="reviewYearDisplay" style="font-weight: bold; color: var(--uci-blue);"></span> 年 <span id="reviewMonthDisplay" style="font-weight: bold; color: var(--uci-blue);"></span> 月 <span id="reviewDayDisplay" style="font-weight: bold; color: var(--uci-blue);"></span> 日由學員及監護人攜回審閱（契約審閱期間至少為五日）。甲方簽章確認已充分審閱並同意條款。<br>
                 <span style="color: var(--text-sub); font-style: italic;">This standard contract was taken home by the student/parent for review on Minguo <span id="reviewYearDisplayEn"></span>/<span id="reviewMonthDisplayEn"></span>/<span id="reviewDayDisplayEn"></span> (The contract review period shall be at least five days). Signature below confirms full review and acknowledgment.</span>
@@ -381,32 +410,35 @@
                     <tbody>
                         <tr>
                             <th><span class="zh-title">選讀核定班別</span><span class="en-title">Enrolled Course</span></th>
-                            <!-- 🎯 精準規範：第一區表格欄位文字拆為兩行，刪除贅字「班」，100% 幾何精準置中！ -->
-                            <td style="font-weight: bold; color: var(--uci-blue); font-size: 13.5px; text-align: center; vertical-align: middle; line-height: 1.4; padding: 6px;">
-                                Let's Go 1<br>兒童美語初級
+                            <!-- 🎯 Aegis 核心 UI 規範 5：班別拆分為兩行，上下左右 100% 幾何精準置中，並刪除贅字「班」 -->
+                            <td>
+                                <div class="static-course-cell">
+                                    <span style="font-size: 14px; font-weight: 800;">Let's Go 1</span>
+                                    <span style="font-size: 12px; font-weight: 600; margin-top: 2px;">兒童美語初級</span>
+                                </div>
                             </td>
                             <th><span class="zh-title">核定收費方案選擇</span><span class="en-title">Tuition Plan Option</span></th>
                             <td>
                                 <select id="discountSelector" class="select-input" onchange="calculateContractBilling()">
                                     <option value="1">標準常規原價方案 / Standard Plan ($35,948)</option>
-                                    <option value="0.9">9折優惠方案 / 10% Off Promotion</option>
-                                    <option value="0.85">85折優惠方案 / 15% Off Promotion</option>
-                                    <!-- 🎯 已刪除「老朋友」字樣，統一顯示為「✨ 8 折優惠方案」 -->
-                                    <option value="0.8">✨ 8 折優惠方案 / 20% Off Promotion</option>
+                                    <option value="0.9">9折優惠方案 / 10% Off Promotion ($32,353)</option>
+                                    <option value="0.85">85折優惠方案 / 15% Off Promotion ($30,556)</option>
+                                    <!-- 🎯 Aegis 核心 UI 規範 6：刪除「老朋友」字樣，統一為「✨ 8 折優惠」 -->
+                                    <option value="0.8">✨ 8折優惠方案 / 20% Off Promotion ($28,758)</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <th><span class="zh-title">(1) 學費</span><span class="en-title">Tuition Fee</span></th>
-                            <td id="td_tuition" style="font-weight: bold; color: var(--uci-blue);">NT$ 31,620 元</td>
+                            <td id="td_tuition" style="font-weight: 700; color: var(--uci-blue);">NT$ 31,620 元</td>
                             <th><span class="zh-title">(2) 講義教材費</span><span class="en-title">Materials Fee</span></th>
-                            <td id="td_materials" style="font-weight: bold; color: var(--uci-blue);">NT$ 1,268 元</td>
+                            <td id="td_materials" style="font-weight: 700; color: var(--uci-blue);">NT$ 1,268 元</td>
                         </tr>
                         <tr>
                             <th><span class="zh-title">(3) 當期學雜費</span><span class="en-title">School Fees</span></th>
-                            <td id="td_misc" style="font-weight: bold; color: var(--uci-blue);">NT$ 3,060 元</td>
+                            <td id="td_misc" style="font-weight: 700; color: var(--uci-blue);">NT$ 3,060 元</td>
                             <th><span class="zh-title">核定繳費總金額(1)+(2)+(3)</span><span class="en-title">Grand Total (1)+(2)+(3)</span></th>
-                            <td id="td_total" style="font-weight: bold; color: #c00; font-size: 14px;">NT$ 35,948 元</td>
+                            <td id="td_total" style="font-weight: 700; color: var(--soft-red); font-size: 14px;">NT$ 35,948 元</td>
                         </tr>
                     </tbody>
                 </table>
@@ -444,7 +476,7 @@
                 </div>
                 <div class="legal-item">
                     <strong>第五條：收費項目、金額與禁止不當收費 / Article 5: Fee Items, Grand Total, and Receipt Requirements：</strong><br>
-                    1. 本期核定收費費用包含基本學費、教材講義費及當期學雜費，當期實際應繳總金額以本合約第一項動態計算扣除優惠減免後之實際金額為準（目前核定應繳總額為新台幣 <span id="legal_total_zh" style="font-weight:bold; color:#c00;">35,948</span> 元）。<br>
+                    1. 本期核定收費費用包含基本學費、教材講義費及當期學雜費，當期實際應繳總金額以本合約第一項動態計算扣除優惠減免後之實際金額為準（目前核定原價總額為新台幣 <span id="legal_total_zh" style="font-weight:bold; color:var(--soft-red);">35,948</span> 元）。<br>
                     2. 未明列於契約內之項目，乙方不得收取。所有收取費用乙方應依法開立正式核定收據憑證交予甲方。<br>
                     <span class="legal-en">1. The tuition and fees consist of Base Tuition, Textbooks/Materials, and Fees, and the total payment shall be based on the actual Grand Total dynamically computed under Section 1 after discount deductions.<br>2. Party B shall not collect any fee items that are not explicitly specified herein under any pretext. Official receipts must be issued for all fees collected.</span>
                 </div>
@@ -530,7 +562,6 @@
 </div>
 
 <script>
-// ===== HTML5 左右雙畫布親筆電子簽名引擎 =====
 var parentCanvas = document.getElementById('parentSigPad');
 var staffCanvas = document.getElementById('staffSigPad');
 var parentCtx = parentCanvas.getContext('2d');
@@ -541,77 +572,65 @@ var isDrawingStaff = false;
 var hasSignedParent = false;
 var hasSignedStaff = false;
 
-function resizeAllCanvases() {
-    if(!hasSignedParent) {
-        parentCanvas.width = parentCanvas.parentElement.clientWidth;
-        parentCanvas.height = parentCanvas.parentElement.clientHeight;
-        parentCtx.strokeStyle = "#1b3d6d";
-        parentCtx.lineWidth = 3;
-        parentCtx.lineCap = "round";
-    }
-
-    if(!hasSignedStaff) {
-        staffCanvas.width = staffCanvas.parentElement.clientWidth;
-        staffCanvas.height = staffCanvas.parentElement.clientHeight;
-        staffCtx.strokeStyle = "#1b3d6d"; 
-        staffCtx.lineWidth = 3;
-        staffCtx.lineCap = "round";
-    }
+// 🎯 高解析度 (Retina) Canvas 校準與畫素維護
+function setupCanvas(canvas, ctx) {
+    var rect = canvas.parentElement.getBoundingClientRect();
+    var ratio = window.devicePixelRatio || 1;
+    canvas.width = rect.width * ratio;
+    canvas.height = rect.height * ratio;
+    ctx.scale(ratio, ratio);
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
 }
 
-// 📡 1. 左側家長畫布天線事件
-parentCanvas.addEventListener('mousedown', function(e) { isDrawingParent = true; hasSignedParent = true; draw(parentCtx, e.offsetX, e.offsetY); });
-parentCanvas.addEventListener('mousemove', function(e) { if(isDrawingParent) draw(parentCtx, e.offsetX, e.offsetY); });
-window.addEventListener('mouseup', function() { isDrawingParent = false; parentCtx.beginPath(); });
-
-parentCanvas.addEventListener('touchstart', function(e) {
-    isDrawingParent = true; hasSignedParent = true;
-    var t = e.touches[0]; var rect = parentCanvas.getBoundingClientRect();
-    draw(parentCtx, t.clientX - rect.left, t.clientY - rect.top);
-}, {passive: true});
-parentCanvas.addEventListener('touchmove', function(e) {
-    if(!isDrawingParent) return;
-    var t = e.touches[0]; var rect = parentCanvas.getBoundingClientRect();
-    draw(parentCtx, t.clientX - rect.left, t.clientY - rect.top);
-}, {passive: true});
-parentCanvas.addEventListener('touchend', function() { isDrawingParent = false; parentCtx.beginPath(); });
-
-// 📡 2. 右側行政畫布天線事件
-staffCanvas.addEventListener('mousedown', function(e) { isDrawingStaff = true; hasSignedStaff = true; draw(staffCtx, e.offsetX, e.offsetY); });
-staffCanvas.addEventListener('mousemove', function(e) { if(isDrawingStaff) draw(staffCtx, e.offsetX, e.offsetY); });
-window.addEventListener('mouseup', function() { isDrawingStaff = false; staffCtx.beginPath(); });
-
-staffCanvas.addEventListener('touchstart', function(e) {
-    isDrawingStaff = true; hasSignedStaff = true;
-    var t = e.touches[0]; var rect = staffCanvas.getBoundingClientRect();
-    draw(staffCtx, t.clientX - rect.left, t.clientY - rect.top);
-}, {passive: true});
-staffCanvas.addEventListener('touchmove', function(e) {
-    if(!isDrawingStaff) return;
-    var t = e.touches[0]; var rect = staffCanvas.getBoundingClientRect();
-    draw(staffCtx, t.clientX - rect.left, t.clientY - rect.top);
-}, {passive: true});
-staffCanvas.addEventListener('touchend', function() { isDrawingStaff = false; staffCtx.beginPath(); });
-
-function draw(context, x, y) {
-    context.lineTo(x, y);
-    context.stroke();
-    context.beginPath();
-    context.moveTo(x, y);
+function initCanvases() {
+    setupCanvas(parentCanvas, parentCtx);
+    parentCtx.strokeStyle = "#1b3d6d";
+    
+    setupCanvas(staffCanvas, staffCtx);
+    staffCtx.strokeStyle = "#0077b6";
 }
+
+function getPos(canvas, e) {
+    var rect = canvas.getBoundingClientRect();
+    var clientX = e.clientX || (e.touches && e.touches[0].clientX);
+    var clientY = e.clientY || (e.touches && e.touches[0].clientY);
+    return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+    };
+}
+
+// 簽名事件監聽綁定
+parentCanvas.addEventListener('mousedown', function(e) { isDrawingParent = true; hasSignedParent = true; var p = getPos(parentCanvas, e); parentCtx.beginPath(); parentCtx.moveTo(p.x, p.y); });
+parentCanvas.addEventListener('mousemove', function(e) { if(isDrawingParent) { var p = getPos(parentCanvas, e); parentCtx.lineTo(p.x, p.y); parentCtx.stroke(); } });
+window.addEventListener('mouseup', function() { isDrawingParent = false; });
+
+parentCanvas.addEventListener('touchstart', function(e) { isDrawingParent = true; hasSignedParent = true; var p = getPos(parentCanvas, e); parentCtx.beginPath(); parentCtx.moveTo(p.x, p.y); }, {passive: true});
+parentCanvas.addEventListener('touchmove', function(e) { if(isDrawingParent) { var p = getPos(parentCanvas, e); parentCtx.lineTo(p.x, p.y); parentCtx.stroke(); } }, {passive: true});
+parentCanvas.addEventListener('touchend', function() { isDrawingParent = false; });
+
+staffCanvas.addEventListener('mousedown', function(e) { isDrawingStaff = true; hasSignedStaff = true; var p = getPos(staffCanvas, e); staffCtx.beginPath(); staffCtx.moveTo(p.x, p.y); });
+staffCanvas.addEventListener('mousemove', function(e) { if(isDrawingStaff) { var p = getPos(staffCanvas, e); staffCtx.lineTo(p.x, p.y); staffCtx.stroke(); } });
+window.addEventListener('mouseup', function() { isDrawingStaff = false; });
+
+staffCanvas.addEventListener('touchstart', function(e) { isDrawingStaff = true; hasSignedStaff = true; var p = getPos(staffCanvas, e); staffCtx.beginPath(); staffCtx.moveTo(p.x, p.y); }, {passive: true});
+staffCanvas.addEventListener('touchmove', function(e) { if(isDrawingStaff) { var p = getPos(staffCanvas, e); staffCtx.lineTo(p.x, p.y); staffCtx.stroke(); } }, {passive: true});
+staffCanvas.addEventListener('touchend', function() { isDrawingStaff = false; });
 
 function clearSig(target) {
-    if(target === 'parent') {
-        parentCtx.clearRect(0, 0, parentCanvas.width, parentCanvas.height);
-        hasSignedParent = false;
-    } else {
-        staffCtx.clearRect(0, 0, staffCanvas.width, staffCanvas.height);
-        hasSignedStaff = false;
+    if(target === 'parent') { 
+        parentCtx.clearRect(0, 0, parentCanvas.width, parentCanvas.height); 
+        hasSignedParent = false; 
+    } else { 
+        staffCtx.clearRect(0, 0, staffCanvas.width, staffCanvas.height); 
+        hasSignedStaff = false; 
     }
 }
 
 // =========================================================================
-// 🎯 核心升級：遵守最高協定全項目連動算式：
+// 🎯 核心修正：遵守最高協定全項目連動算式，且 Hidden 欄位完美咬合：
 // 【應繳總金額 = Math.round((基本學費 + 原價教材費 + 當期學雜費) * 折扣率)】
 // 並且同步連動第五條內文總金額（legal_total_zh）！
 // =========================================================================
@@ -621,34 +640,36 @@ function calculateContractBilling() {
     // Let's Go 1 標準三項基礎定額 (51堂課)
     var pricePerLesson = 620;
     var lessons = 51;
-    var baseTuition = pricePerLesson * lessons; // $31,620
+    var rawTuition = pricePerLesson * lessons; // $31,620
     var rawMaterials = 1268;                    // $1,268
     var rawMisc = 60 * lessons;                 // $3,060
     
-    // 全項目未折總計 = 31,620 + 1,268 + 3,060 = 35,948
-    var subTotal = baseTuition + rawMaterials + rawMisc;
+    // 🎯 折扣連動計算：全項目皆乘上折扣率並四捨五入，確保加總 100% 咬合！
+    var calculatedTuition = Math.round(rawTuition * discountRatio);
+    var calculatedMaterials = Math.round(rawMaterials * discountRatio);
+    var calculatedMisc = Math.round(rawMisc * discountRatio);
     
-    // 🎯 全項目一律連動乘上折扣率並四捨五入整數！
-    var grandTotal = Math.round(subTotal * discountRatio);
+    // 應繳實際總計金額
+    var grandTotal = Math.round((rawTuition + rawMaterials + rawMisc) * discountRatio);
 
     // 顯示於表格中
-    document.getElementById('td_tuition').innerText = "NT$ " + baseTuition.toLocaleString() + " 元";
-    document.getElementById('td_materials').innerText = "NT$ " + rawMaterials.toLocaleString() + " 元";
-    document.getElementById('td_misc').innerText = "NT$ " + rawMisc.toLocaleString() + " 元";
+    document.getElementById('td_tuition').innerText = "NT$ " + calculatedTuition.toLocaleString() + " 元";
+    document.getElementById('td_materials').innerText = "NT$ " + calculatedMaterials.toLocaleString() + " 元";
+    document.getElementById('td_misc').innerText = "NT$ " + calculatedMisc.toLocaleString() + " 元";
     document.getElementById('td_total').innerText = "NT$ " + grandTotal.toLocaleString() + " 元";
     
-    // 🎯 法律條款第五條動態連動即時更新！
+    // 🎯 法律條款第五條動態連動更新為實際核定折後金額！
     if (document.getElementById('legal_total_zh')) {
         document.getElementById('legal_total_zh').innerText = grandTotal.toLocaleString();
     }
 
-    // 備份死數據至 Form 隱藏欄位
-    document.getElementById('hidden_tuition').value = baseTuition + " 元";
-    document.getElementById('hidden_materials').value = rawMaterials + " 元";
-    document.getElementById('hidden_misc').value = rawMisc + " 元";
+    // 🎯 Aegis 核心修復：正確將折後金額同步至隱藏欄位傳遞給 GAS 後端！
+    document.getElementById('hidden_tuition').value = calculatedTuition + " 元";
+    document.getElementById('hidden_materials').value = calculatedMaterials + " 元";
+    document.getElementById('hidden_misc').value = calculatedMisc + " 元";
     document.getElementById('hidden_total').value = grandTotal + " 元";
 
-    // 動態修改郵件主旨標籤
+    // 🎯 核心 UI 規範 6：去身分標籤，動態修改郵件主旨標籤
     var discountText = "標準常規原價";
     if (discountRatio === 0.9) discountText = "享 9 折特惠";
     if (discountRatio === 0.85) discountText = "享 85 折特惠";
@@ -657,35 +678,29 @@ function calculateContractBilling() {
     document.getElementById('formSubject').value = "【法律合約完成-" + discountText + "】Let's Go 1 兒童美語初級";
 }
 
-// ===== 雙通道連線傳送驗證 =====
 function prepareSubmit(event) {
     event.preventDefault();
     
-    var blankParent = document.createElement('canvas');
-    blankParent.width = parentCanvas.width; blankParent.height = parentCanvas.height;
-    
-    if (!hasSignedParent || parentCanvas.toDataURL() === blankParent.toDataURL()) {
+    if (!hasSignedParent) {
         alert("⚠️ 智慧防呆提示：負責人 Joy 主任溫馨提醒您，請家長務必先在左側藍色方框內完成「家長親筆電子簽章」，才能送出契約書喔！");
         return false;
     }
     
     document.getElementById('signature_parent_base64').value = parentCanvas.toDataURL("image/png");
     
-    var blankStaff = document.createElement('canvas');
-    blankStaff.width = staffCanvas.width; blankStaff.height = staffCanvas.height;
-    if (hasSignedStaff && staffCanvas.toDataURL() !== blankStaff.toDataURL()) {
+    if (hasSignedStaff) {
         document.getElementById('signature_staff_base64').value = staffCanvas.toDataURL("image/png");
     } else {
         document.getElementById('signature_staff_base64').value = "[本次由家長單向自主簽署，尚未執行行政櫃檯實體複簽覆蓋]";
     }
     
-    document.getElementById('submitBtn').innerText = "正傳送至 Joy 負責人法律簽核夾...";
-    document.getElementById('submitBtn').disabled = true;
+    var submitBtn = document.getElementById('submitBtn');
+    submitBtn.innerText = "正傳送至 Joy 負責人法律簽核夾...";
+    submitBtn.disabled = true;
 
     var googleAppsScriptUrl = "https://script.google.com/macros/s/AKfycbwgH0UA-2abR3kDTfTzcruXpu9oNV9m-t2LeOMG7h-bDaB-RzcKxcYn-HhS8erTE41zAQ/exec";
     var form = document.getElementById('contractForm');
 
-    // 🎯 雙連線發射：先傳送至 Google Sheets 自動存檔，再執行 FormSubmit 發信
     fetch(googleAppsScriptUrl, {
         method: 'POST',
         mode: 'no-cors',
@@ -700,10 +715,9 @@ function prepareSubmit(event) {
 }
 
 window.onload = function() {
-    resizeAllCanvases();
-    window.addEventListener('resize', resizeAllCanvases);
+    initCanvases();
     
-    // 🎯 審閱期即時連動：家長打開網頁當天即為審閱日期（不另外減天數）
+    // 🎯 Aegis 核心 UI 規範 5：審閱期攜回日期即為家長開頁當天日期！
     var today = new Date();
     var minguoYear = today.getFullYear() - 1911;
     var currentMonth = today.getMonth() + 1;
@@ -722,6 +736,12 @@ window.onload = function() {
     }
     
     calculateContractBilling();
+};
+
+// 🎯 視窗尺寸改變時自動維護 Canvas 高解析解析度
+window.onresize = function() {
+    setupCanvas(parentCanvas, parentCtx);
+    setupCanvas(staffCanvas, staffCtx);
 };
 </script>
 </body>
