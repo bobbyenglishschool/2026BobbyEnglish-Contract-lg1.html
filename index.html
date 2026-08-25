@@ -16,6 +16,7 @@
             --uci-blue: #1b3d6d;
             --uci-gold: #fecc07;
             --soft-red: #e74c3c;
+            --lg1-blue: #0077b6;
             --card-bg: #f8fafc;
             --border-color: #1b3d6d; /* 強制導向巴比深藍 */
             --text-main: #1e293b;
@@ -45,6 +46,7 @@
             border-radius: 12px;
             overflow: hidden;
             width: 100%;
+            position: relative;
         }
 
         .page {
@@ -90,7 +92,6 @@
             margin-bottom: 15px;
         }
 
-        /* 🔒 三大表格邊框防護：採用 collapse 演算法與實體深藍色 (#1b3d6d !important) */
         table {
             width: 100%;
             border-collapse: collapse !important;
@@ -136,7 +137,6 @@
             background-color: #fff;
         }
 
-        /* 🎯 Aegis 核心 UI 規範 5：選讀班別拆解兩行、去「班」字、100% 幾何精準居中 */
         .static-course-cell {
             font-weight: bold;
             color: var(--uci-blue);
@@ -163,22 +163,6 @@
             width: 100%;
             padding: 6px 4px;
             outline: none;
-        }
-
-        .text-input {
-            border: none;
-            background: transparent;
-            width: 100%;
-            height: 100%;
-            outline: none;
-            font-family: inherit;
-            color: inherit;
-            font-size: 13px;
-            padding: 4px;
-        }
-
-        .text-input:focus, .select-input:focus {
-            background-color: rgba(254, 204, 7, 0.15);
         }
 
         .privacy-statement {
@@ -263,6 +247,9 @@
             position: relative;
             border-radius: 6px;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         canvas {
@@ -271,6 +258,12 @@
             cursor: crosshair;
             display: block;
             touch-action: none;
+        }
+
+        .sig-preview-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
 
         .canvas-clear-btn {
@@ -347,6 +340,50 @@
             transform: scale(1.02);
         }
 
+        #loadingOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.92);
+            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
+            color: var(--uci-blue); font-weight: 800; font-size: 18px;
+        }
+
+        #successScreen {
+            display: none;
+            padding: 60px 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success-icon { font-size: 65px; margin-bottom: 15px; }
+        .success-title { color: var(--uci-blue); font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+        .success-subtitle { color: var(--text-sub); font-size: 15px; margin-bottom: 30px; }
+
+        .brand-quote-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #e6f0fa 100%);
+            border: 2px solid var(--uci-blue);
+            border-left: 6px solid var(--lg1-blue);
+            border-radius: 10px;
+            padding: 25px 20px;
+            margin: 0 auto 30px auto;
+            max-width: 680px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(27, 61, 109, 0.08);
+        }
+
+        .brand-quote-en { color: var(--uci-blue); font-size: 18px; font-weight: 800; line-height: 1.4; margin-bottom: 12px; }
+        .brand-quote-zh { color: var(--text-main); font-size: 15px; font-weight: 700; line-height: 1.6; }
+        .brand-quote-sub { color: var(--text-sub); font-size: 12.5px; margin-top: 10px; font-style: italic; }
+
+        .btn-group { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .action-btn { border: none; padding: 12px 28px; font-size: 14px; font-weight: 700; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
+        .btn-print { background-color: var(--uci-blue); color: #fff; }
+        .btn-reload { background-color: var(--uci-gold); color: var(--uci-blue); }
+        .action-btn:hover { transform: scale(1.03); opacity: 0.95; }
+
         @media print {
             @page { size: A4 portrait; margin: 10mm 15mm; }
             body { background-color: #fff; padding: 0; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -354,7 +391,8 @@
             .page { padding: 0 !important; }
             .legal-box { height: auto !important; overflow-y: visible !important; border: none !important; background-color: #fff; padding: 0; }
             .legal-item { page-break-inside: avoid; }
-            .canvas-clear-btn, .submit-btn-container, .print-btn-container { display: none !important; }
+            .canvas-clear-btn, .submit-btn-container, .print-btn-container, #successScreen, #loadingOverlay { display: none !important; }
+            #contractForm { display: block !important; }
             .signature-canvas-container { border: 1px solid var(--uci-blue) !important; }
             table, th, td { border: 1px solid #1b3d6d !important; }
             th { width: 25% !important; background-color: #f0f4f8 !important; }
@@ -373,20 +411,27 @@
 </head>
 <body>
 
-<div class="page-container">
-    <form id="contractForm" action="https://formsubmit.co/joy@bobbyenglishschool.com" method="POST" onsubmit="prepareSubmit(event)">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" id="formSubject" name="_subject" value="【法律合約書回傳】Let's Go 1 兒童美語初級">
-        
-        <!-- 🔒 雙簽章圖檔回收管道 -->
-        <input type="hidden" id="signature_parent_base64" name="[家長親筆手寫電子簽章區]">
-        <input type="hidden" id="signature_staff_base64" name="[補習班行政核定電子簽章區]">
+<div id="loadingOverlay">
+    <div style="font-size: 40px; margin-bottom: 10px;">🛡️🛹</div>
+    <div>正在調閱雲端契約資料，請稍候...</div>
+</div>
 
-        <!-- 巴比死數字核心隱形數據備份 -->
-        <input type="hidden" id="hidden_tuition" name="[契約核定] 學費金額">
-        <input type="hidden" id="hidden_materials" name="[契約核定] 教材費金額">
-        <input type="hidden" id="hidden_misc" name="[契約核定] 學雜費金額">
-        <input type="hidden" id="hidden_total" name="[契約核定] 總計繳費總額">
+<div class="page-container">
+    <form id="contractForm">
+        <!-- 🎯 精準對齊 LetsGo_Contract 12 欄位 JSON 規格 -->
+        <input type="hidden" name="series" value="LetsGo">
+        <input type="hidden" name="formType" value="contract">
+        <input type="hidden" id="course_name_hidden" name="course_name" value="Let's Go 1">
+
+        <input type="hidden" id="parent_signature_base64" name="parent_signature_base64" value="">
+        <input type="hidden" id="staff_signature_base64" name="staff_signature_base64" value="">
+
+        <input type="hidden" id="hidden_tuition" name="tuition_amount" value="">
+        <input type="hidden" id="hidden_materials" name="materials_amount" value="">
+        <input type="hidden" id="hidden_misc" name="misc_amount" value="">
+        <input type="hidden" id="hidden_total" name="total_amount" value="">
+        <input type="hidden" id="hidden_total_words" name="total_amount_words" value="">
+        <input type="hidden" id="hidden_discount_plan_text" name="discount_plan_text" value="">
 
         <div class="page">
             <div class="contract-header">
@@ -399,8 +444,8 @@
             <!-- 🎯 契約審閱確認條款 -->
             <div class="privacy-statement">
                 <strong>【重要權益：契約審閱權】 / Contract Review Right</strong><br>
-                本定型化契約書於中華民國 <span id="reviewYearDisplay" style="font-weight: bold; color: var(--uci-blue);"></span> 年 <span id="reviewMonthDisplay" style="font-weight: bold; color: var(--uci-blue);"></span> 月 <span id="reviewDayDisplay" style="font-weight: bold; color: var(--uci-blue);"></span> 日由學員及監護人攜回審閱（契約審閱期間至少為五日）。甲方簽章確認已充分審閱並同意條款。<br>
-                <span style="color: var(--text-sub); font-style: italic;">This standard contract was taken home by the student/parent for review on Minguo <span id="reviewYearDisplayEn"></span>/<span id="reviewMonthDisplayEn"></span>/<span id="reviewDayDisplayEn"></span> (The contract review period shall be at least five days). Signature below confirms full review and acknowledgment.</span>
+                本定型化契約書於中華民國 <span id="reviewYearDisplay" style="font-weight: bold; color: var(--uci-blue);"></span> 年 <span id="reviewMonthDisplay" style="font-weight: bold; color: var(--uci-blue);"></span> 月 <span id="reviewDayDisplay" style="font-weight: bold; color: var(--uci-blue);"></span> 日由學員 <input type="text" id="contract_student_name" name="contract_student_name" placeholder="請填學生中文姓名" style="border:none; border-bottom:1.5px solid #1b3d6d; background:transparent; outline:none; font-weight:bold; color:var(--uci-blue); width:130px; text-align:center; font-size:13.5px;" required> 及監護人 <input type="text" id="contract_parent_name" name="contract_parent_name" placeholder="請填家長中文姓名" style="border:none; border-bottom:1.5px solid #1b3d6d; background:transparent; outline:none; font-weight:bold; color:var(--uci-blue); width:130px; text-align:center; font-size:13.5px;" required> 攜回審閱（契約審閱期間至少為五日）。甲方簽章確認已充分審閱並同意條款。<br>
+                <span style="color: var(--text-sub); font-size: 11.5px; font-style: italic;">This standard contract was taken home for review by student <span id="reviewStudentEn" style="font-weight:bold;">[Student]</span> and guardian <span id="reviewParentEn" style="font-weight:bold;">[Parent]</span> on Minguo <span id="reviewYearDisplayEn"></span>/<span id="reviewMonthDisplayEn"></span>/<span id="reviewDayDisplayEn"></span> (The contract review period shall be at least five days). Signature below confirms full review and acknowledgment.</span>
             </div>
 
             <!-- 📄 【契約核定區】 -->
@@ -410,7 +455,6 @@
                     <tbody>
                         <tr>
                             <th><span class="zh-title">選讀核定班別</span><span class="en-title">Enrolled Course</span></th>
-                            <!-- 🎯 Aegis 核心 UI 規範 5：班別拆分為兩行，上下左右 100% 幾何精準置中，並刪除贅字「班」 -->
                             <td>
                                 <div class="static-course-cell">
                                     <span style="font-size: 14px; font-weight: 800;">Let's Go 1</span>
@@ -423,7 +467,6 @@
                                     <option value="1">標準常規原價方案 / Standard Plan ($35,948)</option>
                                     <option value="0.9">9折優惠方案 / 10% Off Promotion ($32,353)</option>
                                     <option value="0.85">85折優惠方案 / 15% Off Promotion ($30,556)</option>
-                                    <!-- 🎯 Aegis 核心 UI 規範 6：刪除「老朋友」字樣，統一為「✨ 8 折優惠」 -->
                                     <option value="0.8">✨ 8折優惠方案 / 20% Off Promotion ($28,758)</option>
                                 </select>
                             </td>
@@ -476,7 +519,7 @@
                 </div>
                 <div class="legal-item">
                     <strong>第五條：收費項目、金額與禁止不當收費 / Article 5: Fee Items, Grand Total, and Receipt Requirements：</strong><br>
-                    1. 本期核定收費費用包含基本學費、教材講義費及當期學雜費，當期實際應繳總金額以本合約第一項動態計算扣除優惠減免後之實際金額為準（目前核定原價總額為新台幣 <span id="legal_total_zh" style="font-weight:bold; color:var(--soft-red);">35,948</span> 元）。<br>
+                    1. 本期核定收費費用包含基本學費、教材講義費及當期學雜費，當期實際應繳總金額以本合約第一項動態計算扣除優惠減免後之實際金額為準（目前核定原價總額為新台幣 <span id="legal_total_zh" style="font-weight:bold; color:var(--soft-red);">35,948</span> 元，大寫為：<span id="legal_total_words" style="font-weight:bold; color:var(--soft-red);">新臺幣參萬伍仟玖佰肆拾捌元整</span>）。<br>
                     2. 未明列於契約內之項目，乙方不得收取。所有收取費用乙方應依法開立正式核定收據憑證交予甲方。<br>
                     <span class="legal-en">1. The tuition and fees consist of Base Tuition, Textbooks/Materials, and Fees, and the total payment shall be based on the actual Grand Total dynamically computed under Section 1 after discount deductions.<br>2. Party B shall not collect any fee items that are not explicitly specified herein under any pretext. Official receipts must be issued for all fees collected.</span>
                 </div>
@@ -530,20 +573,18 @@
 
             <!-- 👑 雙軌親筆電子簽名艙 -->
             <div class="dual-signature-row">
-                <!-- 左邊：家長簽名區 (48%) -->
                 <div class="signature-block">
                     <span class="signature-label">✍️ 甲方家長/監護人親筆電子簽名區：</span>
-                    <div class="signature-canvas-container">
+                    <div class="signature-canvas-container" id="parentSigBox">
                         <canvas id="parentSigPad"></canvas>
-                        <button type="button" class="canvas-clear-btn" onclick="clearSig('parent')">清除重簽 / Clear</button>
+                        <button type="button" class="canvas-clear-btn" id="parentClearBtn" onclick="clearSig('parent')">清除重簽 / Clear</button>
                     </div>
                 </div>
-                <!-- 右邊：補習班行政簽名區 (48%) -->
                 <div class="signature-block">
                     <span class="signature-label">🛡️ 乙方補習班授權行政審查人員簽名區：</span>
-                    <div class="signature-canvas-container">
+                    <div class="signature-canvas-container" id="staffSigBox">
                         <canvas id="staffSigPad"></canvas>
-                        <button type="button" class="canvas-clear-btn" onclick="clearSig('staff')">清除重簽 / Clear</button>
+                        <button type="button" class="canvas-clear-btn" id="staffClearBtn" onclick="clearSig('staff')">清除重簽 / Clear</button>
                     </div>
                 </div>
             </div>
@@ -554,26 +595,57 @@
             </div>
 
             <!-- 圓角黃金按鈕完全體 -->
-            <div class="submit-btn-container">
+            <div class="submit-btn-container" id="submitBtnWrapper">
                 <button type="submit" id="submitBtn" class="submit-btn">我已閱讀完畢 ── 確認電子送出法律契約書</button>
             </div>
         </div>
     </form>
+
+    <!-- 🌟 送出成功後的尊榮法律簽署感謝卡片 -->
+    <div id="successScreen">
+        <div class="success-icon">🛡️✨</div>
+        <h2 class="success-title">定型化契約已成功完成電子簽署！</h2>
+        <p class="success-subtitle">感謝您完成 Let's Go 1 服務契約書之線上簽署，系統已將您的親筆簽名與條款安全歸檔備份。</p>
+        
+        <div class="brand-quote-box">
+            <div class="brand-quote-en">"Speak with Confidence! Service Contract Signed & Archived Safely."</div>
+            <div class="brand-quote-zh">✨ 感謝攜手啟動基礎美語發音與表達！雙向條款已完成親筆電子簽章安全備份！ ✨</div>
+            <div class="brand-quote-sub">Bobby English School — Short-term Cram School Service Agreement Successfully Completed.</div>
+        </div>
+
+        <div class="btn-group">
+            <button type="button" class="action-btn btn-print" onclick="printContract()">🖨️ 列印 / 匯出本簽署契約 PDF</button>
+            <button type="button" class="action-btn btn-reload" onclick="window.location.reload()">重新填寫 / 簽署下一份契約</button>
+        </div>
+    </div>
 </div>
 
 <script>
-var parentCanvas = document.getElementById('parentSigPad');
-var staffCanvas = document.getElementById('staffSigPad');
-var parentCtx = parentCanvas.getContext('2d');
-var staffCtx = staffCanvas.getContext('2d');
+var parentCanvas, staffCanvas;
+var parentCtx, staffCtx;
+var isDrawingParent = false, isDrawingStaff = false;
+var hasSignedParent = false, hasSignedStaff = false;
 
-var isDrawingParent = false;
-var isDrawingStaff = false;
-var hasSignedParent = false;
-var hasSignedStaff = false;
+// 固定雙向 API 節點 URL
+var PURE_GAS_URL = "https://script.google.com/macros/s/AKfycbwr4AAm42X6bvPwEbp8tPhyc0N3js3zhicgkD5YGrnk5EnKmeGakB7FUIcCH98glKrwVA/exec";
 
-// 🎯 高解析度 (Retina) Canvas 校準與畫素維護
+function numberToChineseWords(n) {
+    var digit = ['零', '壹', '貳', '參', '肆', '伍', '陸', '柒', '捌', '玖'];
+    var unit = [['元', '萬', '億'], ['', '拾', '佰', '仟']];
+    var s = '';
+    for (var i = 0; i < unit[0].length && n > 0; i++) {
+        var p = '';
+        for (var j = 0; j < unit[1].length && n > 0; j++) {
+            p = digit[n % 10] + unit[1][j] + p;
+            n = Math.floor(n / 10);
+        }
+        s = p.replace(/(零.)*零$/, '').replace(/^$/, '零') + unit[0][i] + s;
+    }
+    return '新臺幣' + s.replace(/(零.)*零元/, '元').replace(/(零.)+/g, '零').replace(/^整$/, '零元整') + '整';
+}
+
 function setupCanvas(canvas, ctx) {
+    if (!canvas) return;
     var rect = canvas.parentElement.getBoundingClientRect();
     var ratio = window.devicePixelRatio || 1;
     canvas.width = rect.width * ratio;
@@ -585,139 +657,233 @@ function setupCanvas(canvas, ctx) {
 }
 
 function initCanvases() {
-    setupCanvas(parentCanvas, parentCtx);
-    parentCtx.strokeStyle = "#1b3d6d";
+    parentCanvas = document.getElementById('parentSigPad');
+    staffCanvas = document.getElementById('staffSigPad');
+    if (parentCanvas) parentCtx = parentCanvas.getContext('2d');
+    if (staffCanvas) staffCtx = staffCanvas.getContext('2d');
+
+    if (parentCanvas) {
+        setupCanvas(parentCanvas, parentCtx);
+        parentCtx.strokeStyle = "#1b3d6d";
+        bindCanvasEvents(parentCanvas, parentCtx, function(status) { isDrawingParent = status; hasSignedParent = true; });
+    }
     
-    setupCanvas(staffCanvas, staffCtx);
-    staffCtx.strokeStyle = "#0077b6";
+    if (staffCanvas) {
+        setupCanvas(staffCanvas, staffCtx);
+        staffCtx.strokeStyle = "#0077b6";
+        bindCanvasEvents(staffCanvas, staffCtx, function(status) { isDrawingStaff = status; hasSignedStaff = true; });
+    }
 }
 
-function getPos(canvas, e) {
-    var rect = canvas.getBoundingClientRect();
-    var clientX = e.clientX || (e.touches && e.touches[0].clientX);
-    var clientY = e.clientY || (e.touches && e.touches[0].clientY);
-    return {
-        x: clientX - rect.left,
-        y: clientY - rect.top
-    };
+function bindCanvasEvents(canvas, ctx, setStatus) {
+    function getPos(e) {
+        var rect = canvas.getBoundingClientRect();
+        var clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        var clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    canvas.addEventListener('mousedown', function(e) { setStatus(true); var p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+    canvas.addEventListener('mousemove', function(e) { if(isDrawingParent || isDrawingStaff) { var p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } });
+    window.addEventListener('mouseup', function() { setStatus(false); });
+
+    canvas.addEventListener('touchstart', function(e) { setStatus(true); var p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, {passive: true});
+    canvas.addEventListener('touchmove', function(e) { if(isDrawingParent || isDrawingStaff) { var p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } }, {passive: true});
+    canvas.addEventListener('touchend', function() { setStatus(false); });
 }
-
-// 簽名事件監聽綁定
-parentCanvas.addEventListener('mousedown', function(e) { isDrawingParent = true; hasSignedParent = true; var p = getPos(parentCanvas, e); parentCtx.beginPath(); parentCtx.moveTo(p.x, p.y); });
-parentCanvas.addEventListener('mousemove', function(e) { if(isDrawingParent) { var p = getPos(parentCanvas, e); parentCtx.lineTo(p.x, p.y); parentCtx.stroke(); } });
-window.addEventListener('mouseup', function() { isDrawingParent = false; });
-
-parentCanvas.addEventListener('touchstart', function(e) { isDrawingParent = true; hasSignedParent = true; var p = getPos(parentCanvas, e); parentCtx.beginPath(); parentCtx.moveTo(p.x, p.y); }, {passive: true});
-parentCanvas.addEventListener('touchmove', function(e) { if(isDrawingParent) { var p = getPos(parentCanvas, e); parentCtx.lineTo(p.x, p.y); parentCtx.stroke(); } }, {passive: true});
-parentCanvas.addEventListener('touchend', function() { isDrawingParent = false; });
-
-staffCanvas.addEventListener('mousedown', function(e) { isDrawingStaff = true; hasSignedStaff = true; var p = getPos(staffCanvas, e); staffCtx.beginPath(); staffCtx.moveTo(p.x, p.y); });
-staffCanvas.addEventListener('mousemove', function(e) { if(isDrawingStaff) { var p = getPos(staffCanvas, e); staffCtx.lineTo(p.x, p.y); staffCtx.stroke(); } });
-window.addEventListener('mouseup', function() { isDrawingStaff = false; });
-
-staffCanvas.addEventListener('touchstart', function(e) { isDrawingStaff = true; hasSignedStaff = true; var p = getPos(staffCanvas, e); staffCtx.beginPath(); staffCtx.moveTo(p.x, p.y); }, {passive: true});
-staffCanvas.addEventListener('touchmove', function(e) { if(isDrawingStaff) { var p = getPos(staffCanvas, e); staffCtx.lineTo(p.x, p.y); staffCtx.stroke(); } }, {passive: true});
-staffCanvas.addEventListener('touchend', function() { isDrawingStaff = false; });
 
 function clearSig(target) {
-    if(target === 'parent') { 
+    if(target === 'parent' && parentCtx) { 
         parentCtx.clearRect(0, 0, parentCanvas.width, parentCanvas.height); 
         hasSignedParent = false; 
-    } else { 
+    } else if (staffCtx) { 
         staffCtx.clearRect(0, 0, staffCanvas.width, staffCanvas.height); 
         hasSignedStaff = false; 
     }
 }
 
-// =========================================================================
-// 🎯 核心修正：遵守最高協定全項目連動算式，且 Hidden 欄位完美咬合：
-// 【應繳總金額 = Math.round((基本學費 + 原價教材費 + 當期學雜費) * 折扣率)】
-// 並且同步連動第五條內文總金額（legal_total_zh）！
-// =========================================================================
 function calculateContractBilling() {
-    var discountRatio = parseFloat(document.getElementById('discountSelector').value);
+    var discountSelect = document.getElementById('discountSelector');
+    var discountRatio = parseFloat(discountSelect.value);
+    var discountText = discountSelect.options[discountSelect.selectedIndex].text;
     
-    // Let's Go 1 標準三項基礎定額 (51堂課)
     var pricePerLesson = 620;
     var lessons = 51;
-    var rawTuition = pricePerLesson * lessons; // $31,620
-    var rawMaterials = 1268;                    // $1,268
-    var rawMisc = 60 * lessons;                 // $3,060
+    var rawTuition = pricePerLesson * lessons; // 31,620
+    var rawMaterials = 1268;                    // 1,268 (Let's Go 1 專屬)
+    var rawMisc = 60 * lessons;                 // 3,060
     
-    // 🎯 折扣連動計算：全項目皆乘上折扣率並四捨五入，確保加總 100% 咬合！
     var calculatedTuition = Math.round(rawTuition * discountRatio);
     var calculatedMaterials = Math.round(rawMaterials * discountRatio);
     var calculatedMisc = Math.round(rawMisc * discountRatio);
     
-    // 應繳實際總計金額
     var grandTotal = Math.round((rawTuition + rawMaterials + rawMisc) * discountRatio);
 
-    // 顯示於表格中
     document.getElementById('td_tuition').innerText = "NT$ " + calculatedTuition.toLocaleString() + " 元";
     document.getElementById('td_materials').innerText = "NT$ " + calculatedMaterials.toLocaleString() + " 元";
     document.getElementById('td_misc').innerText = "NT$ " + calculatedMisc.toLocaleString() + " 元";
     document.getElementById('td_total').innerText = "NT$ " + grandTotal.toLocaleString() + " 元";
     
-    // 🎯 法律條款第五條動態連動更新為實際核定折後金額！
-    if (document.getElementById('legal_total_zh')) {
-        document.getElementById('legal_total_zh').innerText = grandTotal.toLocaleString();
+    document.getElementById('legal_total_zh').innerText = grandTotal.toLocaleString();
+    var zhWords = numberToChineseWords(grandTotal);
+    if(document.getElementById('legal_total_words')) {
+        document.getElementById('legal_total_words').innerText = zhWords;
     }
 
-    // 🎯 Aegis 核心修復：正確將折後金額同步至隱藏欄位傳遞給 GAS 後端！
     document.getElementById('hidden_tuition').value = calculatedTuition + " 元";
     document.getElementById('hidden_materials').value = calculatedMaterials + " 元";
     document.getElementById('hidden_misc').value = calculatedMisc + " 元";
     document.getElementById('hidden_total').value = grandTotal + " 元";
-
-    // 🎯 核心 UI 規範 6：去身分標籤，動態修改郵件主旨標籤
-    var discountText = "標準常規原價";
-    if (discountRatio === 0.9) discountText = "享 9 折特惠";
-    if (discountRatio === 0.85) discountText = "享 85 折特惠";
-    if (discountRatio === 0.8) discountText = "享 8 折特惠";
-
-    document.getElementById('formSubject').value = "【法律合約完成-" + discountText + "】Let's Go 1 兒童美語初級";
+    document.getElementById('hidden_total_words').value = zhWords;
+    document.getElementById('hidden_discount_plan_text').value = discountText;
 }
 
-function prepareSubmit(event) {
-    event.preventDefault();
+document.getElementById('contract_student_name').addEventListener('input', function() {
+    document.getElementById('reviewStudentEn').innerText = this.value || '[Student]';
+});
+document.getElementById('contract_parent_name').addEventListener('input', function() {
+    document.getElementById('reviewParentEn').innerText = this.value || '[Parent]';
+});
+
+function printContract() {
+    document.getElementById('contractForm').style.display = 'block';
+    document.getElementById('successScreen').style.display = 'none';
+    window.print();
+    document.getElementById('contractForm').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+}
+
+// 🚀 Row-ID 超短網址全自動與雙向 doGet 解碼還原機制
+function loadRowDataIfPresent() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var rowIndex = urlParams.get('row');
+    var series = urlParams.get('series') || 'LetsGo';
+    var formType = urlParams.get('formType') || 'contract';
+    var autoPrint = urlParams.get('auto_print');
+
+    if (rowIndex) {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+        var fetchUrl = PURE_GAS_URL + "?row=" + rowIndex + "&series=" + series + "&formType=" + formType;
+        
+        fetch(fetchUrl)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            if (data && data.status === "success" && data.rowData) {
+                var row = data.rowData;
+                
+                // 判讀若是從 LetsGo_Contract 查回 (12欄位對齊)
+                if (formType === 'contract' && row.length >= 10) {
+                    if (row[2]) { // 學員姓名
+                        document.getElementById('contract_student_name').value = row[2];
+                        document.getElementById('reviewStudentEn').innerText = row[2];
+                    }
+                    if (row[3]) { // 家長姓名
+                        document.getElementById('contract_parent_name').value = row[3];
+                        document.getElementById('reviewParentEn').innerText = row[3];
+                    }
+                    if (row[4]) { // 方案名稱 (匹配下拉選單)
+                        var sel = document.getElementById('discountSelector');
+                        for(var i=0; i<sel.options.length; i++){
+                            if(sel.options[i].text.indexOf(row[4]) !== -1 || row[4].indexOf(sel.options[i].text) !== -1){
+                                sel.selectedIndex = i;
+                                calculateContractBilling();
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // 還原家長簽名檔 (取代 Canvas 為 <img> 呈現)
+                    if (row[9] && row[9].indexOf('http') === 0) {
+                        var pBox = document.getElementById('parentSigBox');
+                        pBox.innerHTML = '<img src="' + row[9] + '" class="sig-preview-img" alt="家長電子簽名">';
+                        hasSignedParent = true;
+                    }
+                    // 還原補習班核章/經辦簽名檔
+                    if (row[10] && row[10].indexOf('http') === 0) {
+                        var sBox = document.getElementById('staffSigBox');
+                        sBox.innerHTML = '<img src="' + row[10] + '" class="sig-preview-img" alt="補習班核章">';
+                        hasSignedStaff = true;
+                    }
+
+                    // 預覽與列印模式下隱藏提交按鈕
+                    if (document.getElementById('submitBtnWrapper')) {
+                        document.getElementById('submitBtnWrapper').style.display = 'none';
+                    }
+
+                } else if (formType === 'registration' && row.length >= 10) {
+                    // 若是從報名表點過來聯動
+                    if (row[2]) {
+                        document.getElementById('contract_student_name').value = row[2];
+                        document.getElementById('reviewStudentEn').innerText = row[2];
+                    }
+                    if (row[8]) {
+                        document.getElementById('contract_parent_name').value = row[8];
+                        document.getElementById('reviewParentEn').innerText = row[8];
+                    }
+                }
+
+                // 🎯 支援一鍵開啟自動觸發列印
+                if (autoPrint === 'true') {
+                    setTimeout(function() { window.print(); }, 800);
+                }
+            }
+        })
+        .catch(function(err) {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            console.log("Row-ID Fetch Error:", err);
+        });
+    }
+}
+
+// 🚀 Pure GAS POST 串接與畫面切換邏輯
+document.getElementById('contractForm').addEventListener('submit', function(e) {
+    e.preventDefault();
     
     if (!hasSignedParent) {
         alert("⚠️ 智慧防呆提示：負責人 Joy 主任溫馨提醒您，請家長務必先在左側藍色方框內完成「家長親筆電子簽章」，才能送出契約書喔！");
-        return false;
+        return;
     }
     
-    document.getElementById('signature_parent_base64').value = parentCanvas.toDataURL("image/png");
-    
-    if (hasSignedStaff) {
-        document.getElementById('signature_staff_base64').value = staffCanvas.toDataURL("image/png");
-    } else {
-        document.getElementById('signature_staff_base64').value = "[本次由家長單向自主簽署，尚未執行行政櫃檯實體複簽覆蓋]";
+    if (parentCanvas && parentCanvas.toDataURL) {
+        document.getElementById('parent_signature_base64').value = parentCanvas.toDataURL("image/png");
     }
-    
+    if (hasSignedStaff && staffCanvas && staffCanvas.toDataURL) {
+        document.getElementById('staff_signature_base64').value = staffCanvas.toDataURL("image/png");
+    }
+
     var submitBtn = document.getElementById('submitBtn');
-    submitBtn.innerText = "正傳送至 Joy 負責人法律簽核夾...";
+    submitBtn.innerText = "正在傳送契約書至巴比雲端系統...";
     submitBtn.disabled = true;
 
-    var googleAppsScriptUrl = "https://script.google.com/macros/s/AKfycbwgH0UA-2abR3kDTfTzcruXpu9oNV9m-t2LeOMG7h-bDaB-RzcKxcYn-HhS8erTE41zAQ/exec";
-    var form = document.getElementById('contractForm');
+    var formData = new FormData(this);
+    var object = {};
+    formData.forEach(function(value, key){
+        object[key] = value;
+    });
 
-    fetch(googleAppsScriptUrl, {
+    fetch(PURE_GAS_URL, {
         method: 'POST',
         mode: 'no-cors',
-        body: new URLSearchParams(new FormData(form))
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(object)
     })
     .then(function() {
-        form.submit();
+        document.getElementById('contractForm').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     })
-    .catch(function() {
-        form.submit();
+    .catch(function(error) {
+        console.error("Contract submission error:", error);
+        document.getElementById('contractForm').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-}
+});
 
 window.onload = function() {
     initCanvases();
     
-    // 🎯 Aegis 核心 UI 規範 5：審閱期攜回日期即為家長開頁當天日期！
     var today = new Date();
     var minguoYear = today.getFullYear() - 1911;
     var currentMonth = today.getMonth() + 1;
@@ -736,12 +902,12 @@ window.onload = function() {
     }
     
     calculateContractBilling();
+    loadRowDataIfPresent();
 };
 
-// 🎯 視窗尺寸改變時自動維護 Canvas 高解析解析度
 window.onresize = function() {
-    setupCanvas(parentCanvas, parentCtx);
-    setupCanvas(staffCanvas, staffCtx);
+    if (parentCanvas && parentCtx) setupCanvas(parentCanvas, parentCtx);
+    if (staffCanvas && staffCtx) setupCanvas(staffCanvas, staffCtx);
 };
 </script>
 </body>
